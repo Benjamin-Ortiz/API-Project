@@ -5,7 +5,7 @@ const cors= require('cors');
 const csurf= require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const {ValidationError} = require('sequelize')
+const { ValidationError } = require('sequelize');
 
 
 
@@ -56,9 +56,10 @@ app.use((_req, _res, next) => {
   err.errors = ["The requested resource couldn't be found."];
   err.status = 404;
   next(err);
-})
+});
 
 
+// Process sequelize errors
 app.use((err, _req, _res, next) => {
   // check if error is a Sequelize error:
   if (err instanceof ValidationError) {
@@ -67,7 +68,6 @@ app.use((err, _req, _res, next) => {
   }
   next(err);
 });
-
 
 
 //*This should be the last

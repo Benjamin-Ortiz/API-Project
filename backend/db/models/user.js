@@ -1,6 +1,6 @@
 "use strict";
-const { Model } = require("sequelize");
 const bcrypt = require("bcryptjs");
+const { Model, Validator } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     validatePassword(password) {
-      return bcrypt.compareSync(password, this.hashedPassword.toString());
+      return bcrypt.compareSync(password,
+        this.hashedPassword.toString());
     }
 
     //? Define a static method getCurrentUserById
@@ -27,17 +28,17 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async login({ credential, password }) {
-      const { Op } = require("sequelize");
-      const user = await User.scope("loginUser").findOne({
+      const { Op } = require('sequelize');
+      const user = await User.scope('loginUser').findOne({
         where: {
           [Op.or]: {
             username: credential,
-            email: credential,
-          },
-        },
+            email: credential
+          }
+        }
       });
       if (user && user.validatePassword(password)) {
-        return await User.scope("currentUser").findByPk(user.id);
+        return await User.scope('currentUser').findByPk(user.id);
       }
     }
 
@@ -48,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
         email,
         hashedPassword
       });
-      return await User.scope("currentUser").findByPk(user.id);
+      return await User.scope('currentUser').findByPk(user.id);
     }
 
     static associate(models) {
@@ -95,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
           //when searching for Users, the hashedPassword, updatedAt,
           //and, depending on your application, email and createdAt
           //fields should not be returned
-          exclude: ["hashedPassword", "email", "createdAt", "updatedAt"],
+          exclude: ["hashedPassword", "email", "createdAt", "updatedAt"]
         },
       },
       scopes: {
